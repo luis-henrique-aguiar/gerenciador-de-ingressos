@@ -1,27 +1,33 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Venda_Ingresso;
+package br.edu.ifsp.vendas_ingresso.model.entity;
+
+import br.edu.ifsp.vendas_ingresso.view.enums.Setores;
+import br.edu.ifsp.vendas_ingresso.view.enums.TipoIngresso;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-/**
- *
- * @author Junior
- */
 public class Ingresso {
-    
+
     private int codigo;
     private String nome;
-    private String setor;
+    private Setores setor;
     private double valor;
     private int quantidade;
     private double valorTotal;
     private String dataHora;
+    private TipoIngresso tipoIngresso;
+
+    public void setTipoIngresso(TipoIngresso tipoIngresso) {
+        this.tipoIngresso = tipoIngresso;
+    }
+
+    public void setDataHora(String dataHora) {
+        this.dataHora = dataHora;
+    }
+
+    public TipoIngresso getTipoIngresso() {
+        return tipoIngresso;
+    }
 
     public Ingresso() {
     }
@@ -50,11 +56,11 @@ public class Ingresso {
         this.quantidade = quantidade;
     }
 
-    public String getSetor() {
+    public Setores getSetor() {
         return setor;
     }
 
-    public void setSetor(String setor) {
+    public void setSetor(Setores setor) {
         this.setor = setor;
     }
 
@@ -76,7 +82,7 @@ public class Ingresso {
 
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
-    }    
+    }
 
     public void setDataHora(LocalDateTime dataHora) {
         // formatar a data
@@ -86,10 +92,10 @@ public class Ingresso {
         // formatar a hora
         DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("HH:mm:ss");
         String horaFormatada = formatterHora.format(dataHora);
-        
+
         this.dataHora = dataFormatada + ' ' + horaFormatada;
     }
-    
+
 
     @Override
     public int hashCode() {
@@ -115,9 +121,9 @@ public class Ingresso {
         }
         return true;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 }
