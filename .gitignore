@@ -1,0 +1,17 @@
+# Arquivos do IntelliJ IDEA
+.idea/
+*.iml
+
+# Pastas de build e saída
+build/
+dist/
+out/
+
+# Configurações do NetBeans
+nbproject/
+
+# Arquivos do Eclipse
+.project
+.classpath
+.settings/
+bin/
