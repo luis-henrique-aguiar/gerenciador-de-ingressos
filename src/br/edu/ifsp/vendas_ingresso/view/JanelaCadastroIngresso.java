@@ -86,7 +86,7 @@ public class JanelaCadastroIngresso extends JDialog {
         if(!qtde.matches("\\d+")){
             JOptionPane.showMessageDialog(null, "Insira uma quantidade válida de ingressos!");
         }else {
-            ingresso.setQuantidade(Integer.parseInt(txtQtde.getText()));
+            ingresso.setQuantidade(Integer.parseInt(qtde));
             tipoIngresso = TipoIngresso.valueOf(cbxTipoIngresso.getSelectedItem().toString());
             valorIngresso = getValorIngresso(valorIngresso);
             ingresso.setValor(valorIngresso);
