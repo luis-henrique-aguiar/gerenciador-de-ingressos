@@ -82,26 +82,30 @@ public class JanelaCadastroIngresso extends JDialog {
         ingresso.setNome(txtNome.getText());
         setor = Setores.valueOf(cbxSetores.getSelectedItem().toString());
         ingresso.setSetor(setor);
-        ingresso.setQuantidade(Integer.parseInt(txtQtde.getText()));
-        tipoIngresso = TipoIngresso.valueOf(cbxTipoIngresso.getSelectedItem().toString());
-        valorIngresso = getValorIngresso(valorIngresso);
-        ingresso.setValor(valorIngresso);
+        String qtde = txtQtde.getText();
+        if(!qtde.matches("\\d+")){
+            JOptionPane.showMessageDialog(null, "Insira uma quantidade válida de ingressos!");
+        }else {
+            ingresso.setQuantidade(Integer.parseInt(txtQtde.getText()));
+            tipoIngresso = TipoIngresso.valueOf(cbxTipoIngresso.getSelectedItem().toString());
+            valorIngresso = getValorIngresso(valorIngresso);
+            ingresso.setValor(valorIngresso);
 
-        // Calcula o valor total
-        double valorTotal = ingresso.getValor() * ingresso.getQuantidade();
-        ingresso.setValorTotal(valorTotal);
+            // Calcula o valor total
+            double valorTotal = ingresso.getValor() * ingresso.getQuantidade();
+            ingresso.setValorTotal(valorTotal);
 
-        // Captura a data e hora local da maquina
-        ingresso.setDataHora(LocalDateTime.now());
+            // Captura a data e hora local da maquina
+            ingresso.setDataHora(LocalDateTime.now());
 
-        if (gerenciador.comprarIngresso(ingresso)) {
-            limpar();
-            JOptionPane.showMessageDialog(null, "Ingresso comprado com sucesso!");
-        } else {
-            limpar();
-            JOptionPane.showMessageDialog(null, "Ingressos esgotados! Por favor, selecione outro setor.");
+            if (gerenciador.comprarIngresso(ingresso)) {
+                limpar();
+                JOptionPane.showMessageDialog(null, "Ingresso comprado com sucesso!");
+            } else {
+                limpar();
+                JOptionPane.showMessageDialog(null, "Ingressos esgotados! Por favor, selecione outro setor.");
+            }
         }
-
     }
 
     private void limpar() {
