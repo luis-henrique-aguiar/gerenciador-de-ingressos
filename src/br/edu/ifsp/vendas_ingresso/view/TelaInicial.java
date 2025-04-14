@@ -13,6 +13,7 @@ public class TelaInicial extends JDialog {
     private JPanel painelFundo;
     private JButton btnComprar;
     private JButton btnGerarRelatorio;
+    private JButton btnListarIngressos;
 
     IngressoDAO gerenciador = IngressoDAO.getInstance();
     ArrayList<Ingresso> ingressos = gerenciador.getIngressos();
@@ -26,9 +27,11 @@ public class TelaInicial extends JDialog {
 
         btnComprar = new JButton("Comprar Ingresso");
         btnGerarRelatorio = new JButton("Gerar Relatório");
+        btnListarIngressos = new JButton("Listar Ingressos");
         painelFundo = new JPanel();
         painelFundo.add(btnComprar);
         painelFundo.add(btnGerarRelatorio);
+        painelFundo.add(btnListarIngressos);
 
         add(painelFundo);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -49,6 +52,12 @@ public class TelaInicial extends JDialog {
 
             setVisibleView(janelaGrafica);
             janelaGrafica.imprimirRelatorio(ingressos);
+        });
+
+        btnListarIngressos.addActionListener( e -> {
+            JanelaListarIngressos janelaListarIngressos = new JanelaListarIngressos();
+            setVisibleView(janelaListarIngressos);
+            janelaListarIngressos.imprimirIngressos(ingressos);
         });
     }
 

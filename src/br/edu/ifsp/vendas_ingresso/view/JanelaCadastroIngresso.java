@@ -89,6 +89,7 @@ public class JanelaCadastroIngresso extends JDialog {
             ingresso.setQuantidade(Integer.parseInt(qtde));
             tipoIngresso = TipoIngresso.valueOf(cbxTipoIngresso.getSelectedItem().toString());
             valorIngresso = getValorIngresso(valorIngresso);
+            ingresso.setTipoIngresso(tipoIngresso);
             ingresso.setValor(valorIngresso);
 
             // Calcula o valor total
