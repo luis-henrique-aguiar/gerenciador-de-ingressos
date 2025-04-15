@@ -93,6 +93,19 @@ public class JanelaListarIngressos extends JDialog {
         lblTitulo.setForeground(new Color(30, 100, 200));
         painelFundo.add(lblTitulo, BorderLayout.NORTH);
 
+        JPanel painelTopo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnPesquisar = new JButton("🔍 Pesquisar");
+        btnPesquisar.setFont(new Font("SansSerif", Font.BOLD, 13));
+        btnPesquisar.setBackground(new Color(100, 150, 255));
+        btnPesquisar.setForeground(Color.WHITE);
+
+        btnPesquisar.addActionListener(e -> {
+            new JanelaConsultarIngresso();
+        });
+
+        painelTopo.add(btnPesquisar);
+
+
         scroll = new JScrollPane(tabelaIngressos);
         scroll.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
         painelFundo.add(scroll, BorderLayout.CENTER);
@@ -104,6 +117,9 @@ public class JanelaListarIngressos extends JDialog {
         btnVoltar.setToolTipText("Retornar à tela inicial");
         painelBotoes.add(btnVoltar);
         painelFundo.add(painelBotoes, BorderLayout.SOUTH);
+        painelFundo.add(scroll, BorderLayout.CENTER);
+        painelFundo.add(painelTopo, BorderLayout.NORTH);
+        painelFundo.add(scroll, BorderLayout.CENTER);
 
         setContentPane(painelFundo);
         pack();
