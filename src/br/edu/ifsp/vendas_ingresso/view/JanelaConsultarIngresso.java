@@ -47,6 +47,8 @@ public class JanelaConsultarIngresso extends JDialog{
         modelo.addColumn("Nome");
         modelo.addColumn("Tipo");
         modelo.addColumn("Qtd");
+        modelo.addColumn("Valor");
+        modelo.addColumn("Total");
         modelo.addColumn("Setor"); // Considerando o setor como representante da cor
         modelo.addColumn("Editar");
         modelo.addColumn("Excluir");
@@ -149,6 +151,8 @@ public class JanelaConsultarIngresso extends JDialog{
                     i.getNome(),
                     i.getTipoIngresso(),
                     i.getQuantidade(),
+                    i.getValor(),
+                    i.getValorTotal(),
                     i.getSetor(),
                     "Editar",
                     "Excluir"
@@ -157,18 +161,28 @@ public class JanelaConsultarIngresso extends JDialog{
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
+
         public ButtonRenderer(String label) {
-            setText(label);
             setFont(new Font("Arial", Font.BOLD, 12));
-            setBackground(new Color(100, 150, 255));
             setForeground(Color.WHITE);
+            setOpaque(true);
+            setFocusPainted(false);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
                                                        int row, int column) {
-            setText((value != null) ? value.toString() : "");
+            String label = (value != null) ? value.toString() : "";
+            setText(label);
+            if ("Excluir".equals(label)) {
+                setBackground(new Color(200, 50, 50));
+            } else if ("Editar".equals(label)) {
+                setBackground(new Color(50, 100, 200));
+            } else {
+                setBackground(new Color(100, 150, 255));
+            }
+
             return this;
         }
     }
@@ -182,9 +196,9 @@ public class JanelaConsultarIngresso extends JDialog{
             super(checkBox);
             button = new JButton();
             button.setFont(new Font("Arial", Font.BOLD, 12));
-            button.setBackground(new Color(100, 100, 200));
-            button.setForeground(Color.WHITE);
             button.setOpaque(true);
+            button.setForeground(Color.WHITE);
+            button.setFocusPainted(false);
 
             button.addActionListener(e -> fireEditingStopped());
         }
@@ -194,13 +208,20 @@ public class JanelaConsultarIngresso extends JDialog{
                                                      boolean isSelected, int row, int column) {
             label = (value != null) ? value.toString() : "";
             button.setText(label);
-            clicked = true;
+
+            if ("Excluir".equals(label)) {
+                button.setBackground(new Color(220, 53, 69)); // vermelho
+            } else if ("Editar".equals(label)) {
+                button.setBackground(new Color(23, 162, 184)); // azul claro
+            } else {
+                button.setBackground(new Color(100, 150, 255)); // fallback
+            }
+
             return button;
         }
 
         @Override
         public Object getCellEditorValue() {
-            clicked = false;
             return label;
         }
 
