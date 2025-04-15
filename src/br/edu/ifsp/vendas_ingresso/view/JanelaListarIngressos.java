@@ -56,9 +56,27 @@ public class JanelaListarIngressos extends JDialog {
 
     private void criarComponentes() {
         scroll = new JScrollPane(tabelaIngressos);
+
+
+        JPanel painelTopo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnPesquisar = new JButton("🔍 Pesquisar");
+        btnPesquisar.setFont(new Font("SansSerif", Font.BOLD, 13));
+        btnPesquisar.setBackground(new Color(100, 150, 255));
+        btnPesquisar.setForeground(Color.WHITE);
+
+        btnPesquisar.addActionListener(e -> {
+            new JanelaConsultarIngresso();
+        });
+
+        painelTopo.add(btnPesquisar);
+
+        /////////////////////////////////
+
         JPanel painelFundo = new JPanel(new BorderLayout());
         painelFundo.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         painelFundo.setBackground(new Color(250, 250, 250));
+        painelFundo.add(scroll, BorderLayout.CENTER);
+        painelFundo.add(painelTopo, BorderLayout.NORTH);
         painelFundo.add(scroll, BorderLayout.CENTER);
 
         setContentPane(painelFundo);
