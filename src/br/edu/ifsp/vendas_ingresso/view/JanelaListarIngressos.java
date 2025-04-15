@@ -8,15 +8,21 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class JanelaListarIngressos extends JDialog {
+
     private JTable tabelaIngressos;
     private DefaultTableModel modelo;
     private JScrollPane scroll;
 
     public JanelaListarIngressos() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Permite edição apenas nas colunas dos botões
                 return column == 5 || column == 6;
             }
         };
@@ -28,6 +34,7 @@ public class JanelaListarIngressos extends JDialog {
     private void criarTabela() {
         tabelaIngressos = new JTable(modelo);
         tabelaIngressos.setRowHeight(30);
+        tabelaIngressos.setFont(new Font("SansSerif", Font.PLAIN, 13));
 
         modelo.addColumn("Código");
         modelo.addColumn("Nome");
@@ -36,6 +43,9 @@ public class JanelaListarIngressos extends JDialog {
         modelo.addColumn("Setor");
         modelo.addColumn("Editar");
         modelo.addColumn("Excluir");
+
+        tabelaIngressos.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
+        tabelaIngressos.getTableHeader().setBackground(new Color(220, 220, 255));
 
         tabelaIngressos.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
         tabelaIngressos.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), "Editar"));
@@ -46,13 +56,14 @@ public class JanelaListarIngressos extends JDialog {
 
     private void criarComponentes() {
         scroll = new JScrollPane(tabelaIngressos);
-
         JPanel painelFundo = new JPanel(new BorderLayout());
+        painelFundo.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        painelFundo.setBackground(new Color(250, 250, 250));
         painelFundo.add(scroll, BorderLayout.CENTER);
 
         setContentPane(painelFundo);
-        setTitle("Ingressos");
-        setSize(800, 600);
+        setTitle("Lista de Ingressos");
+        setSize(850, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);
@@ -73,10 +84,12 @@ public class JanelaListarIngressos extends JDialog {
         }
     }
 
-    // Renderizador de botão
     class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer(String label) {
             setText(label);
+            setFont(new Font("Arial", Font.BOLD, 12));
+            setBackground(new Color(100, 150, 255));
+            setForeground(Color.WHITE);
         }
 
         @Override
@@ -88,7 +101,6 @@ public class JanelaListarIngressos extends JDialog {
         }
     }
 
-    // Editor de botão (sem ação por enquanto)
     class ButtonEditor extends DefaultCellEditor {
         private JButton button;
         private String label;
@@ -97,9 +109,12 @@ public class JanelaListarIngressos extends JDialog {
         public ButtonEditor(JCheckBox checkBox, String actionType) {
             super(checkBox);
             button = new JButton();
+            button.setFont(new Font("Arial", Font.BOLD, 12));
+            button.setBackground(new Color(100, 100, 200));
+            button.setForeground(Color.WHITE);
             button.setOpaque(true);
 
-            button.addActionListener(e -> fireEditingStopped()); // Só para encerrar edição
+            button.addActionListener(e -> fireEditingStopped());
         }
 
         @Override
