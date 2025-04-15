@@ -1,6 +1,8 @@
 package br.edu.ifsp.vendas_ingresso.view;
 
+import br.edu.ifsp.vendas_ingresso.model.data.IngressoDAO;
 import br.edu.ifsp.vendas_ingresso.model.entity.Ingresso;
+import br.edu.ifsp.vendas_ingresso.view.ExcluirIngressoAction;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -141,6 +143,19 @@ public class JanelaListarIngressos extends JDialog {
         @Override
         protected void fireEditingStopped() {
             super.fireEditingStopped();
+
+            if ("Excluir".equals(label)) {
+                int row = tabelaIngressos.getSelectedRow();
+                if (row != -1) {
+                    int codigo = (int) tabelaIngressos.getValueAt(row, 0);
+                    ExcluirIngressoAction excluirAction = new ExcluirIngressoAction(JanelaListarIngressos.this);
+                    boolean foiExcluido = excluirAction.executarExclusao(codigo);
+
+                    if (foiExcluido) {
+                        imprimirIngressos(IngressoDAO.getInstance().getIngressos());
+                    }
+                }
+            }
         }
     }
 }
