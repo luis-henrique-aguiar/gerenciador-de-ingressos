@@ -22,6 +22,10 @@ public class IngressoDAO {
         }
     }
 
+    public boolean excluirIngresso(int codigo) {
+        return ingressos.removeIf(i -> i.getCodigo() == codigo);
+    }
+
     public ArrayList<Ingresso> getIngressos() {
         return ingressos;
     }
@@ -35,8 +39,8 @@ public class IngressoDAO {
 
 }
 
-    
-    
-    
-    
+
+
+
+
 
