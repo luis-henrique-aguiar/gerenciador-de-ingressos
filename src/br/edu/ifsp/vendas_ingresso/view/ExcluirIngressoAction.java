@@ -14,22 +14,35 @@ public class ExcluirIngressoAction {
     }
 
     public boolean executarExclusao(int codigo) {
+        if (codigo <= 0) {
+            JOptionPane.showMessageDialog(parent,
+                    "Código inválido para exclusão.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
         int confirmacao = JOptionPane.showConfirmDialog(
                 parent,
-                "Tem certeza que deseja excluir o ingresso de código " + codigo + "?",
+                "Deseja realmente excluir o ingresso de código " + codigo + "?",
                 "Confirmar Exclusão",
-                JOptionPane.YES_NO_OPTION
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
         );
 
         if (confirmacao == JOptionPane.YES_OPTION) {
             boolean excluido = IngressoDAO.getInstance().excluirIngresso(codigo);
             if (excluido) {
                 JOptionPane.showMessageDialog(parent,
-                        "Ingresso excluído com sucesso!");
+                        "Ingresso excluído com sucesso!",
+                        "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
                 return true;
             } else {
                 JOptionPane.showMessageDialog(parent,
-                        "Erro ao excluir o ingresso.");
+                        "Erro ao excluir o ingresso. Verifique se o ingresso existe.",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
 

@@ -12,144 +12,243 @@ import java.time.LocalDateTime;
 public class JanelaCadastroIngresso extends JDialog {
 
     private JPanel painelFundo;
-    private JTextField txtCodigo, txtNome, txtQuantidade, txtValor;
-    private JComboBox<TipoIngresso> comboTipo;
-    private JComboBox<Setores> comboSetor;
-    private JButton btnSalvar, btnCancelar;
+    private JButton btnSalvar;
+    private JButton btnVoltar;
+    private JLabel lblTitulo;
+    private JLabel lblNome;
+    private JLabel lblQtde;
+    private JLabel lblSetor;
+    private JLabel lblTipoIngresso;
+    private JTextField txtNome;
+    private JTextField txtQtde;
+    private JComboBox<Setores> cbxSetores;
+    private JComboBox<TipoIngresso> cbxTipoIngresso;
+    private final IngressoDAO gerenciador = IngressoDAO.getInstance();
+    private Ingresso ingressoEdicao;
+    private final TelaInicial telaInicial;
 
-    public JanelaCadastroIngresso() {
+    public JanelaCadastroIngresso(TelaInicial telaInicial) {
+        this(telaInicial, null); // Novo ingresso
+    }
+
+    public JanelaCadastroIngresso(TelaInicial telaInicial, Ingresso ingresso) {
+        this.telaInicial = telaInicial;
+        this.ingressoEdicao = ingresso;
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
-        setTitle("Cadastrar Ingresso");
         criarComponentes();
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(400, 420);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        setOnClickListener();
+        if (ingressoEdicao != null) {
+            preencherCampos();
+        }
     }
 
     private void criarComponentes() {
-        painelFundo = new JPanel(new GridBagLayout());
-        painelFundo.setBackground(new Color(250, 250, 250));
+        setTitle(ingressoEdicao == null ? "Cadastro de Ingresso" : "Editar Ingresso");
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setMinimumSize(new Dimension(400, 400));
+        setLocationRelativeTo(null);
+
+        painelFundo = new JPanel(new BorderLayout(10, 10));
         painelFundo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        painelFundo.setBackground(new Color(240, 240, 240));
+
+        lblTitulo = new JLabel(ingressoEdicao == null ? "Cadastro de Novo Ingresso" : "Editar Ingresso", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+        lblTitulo.setForeground(new Color(30, 100, 200));
+        painelFundo.add(lblTitulo, BorderLayout.NORTH);
+
+        JPanel painelFormulario = new JPanel(new GridBagLayout());
+        painelFormulario.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 8, 10, 8);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-
-        JLabel titulo = new JLabel("Cadastro de Ingresso");
-        titulo.setFont(new Font("Arial", Font.BOLD, 20));
-        titulo.setForeground(new Color(50, 80, 160));
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        painelFundo.add(titulo, gbc);
 
-        gbc.gridwidth = 1;
+        lblNome = new JLabel("Nome:");
+        lblNome.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(lblNome, gbc);
 
-        // Nome
-        gbc.gridy++;
-        painelFundo.add(new JLabel("Nome:"), gbc);
-        txtNome = new JTextField();
         gbc.gridx = 1;
-        painelFundo.add(txtNome, gbc);
-        gbc.gridx = 0;
+        txtNome = new JTextField(15);
+        txtNome.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(txtNome, gbc);
 
-        // Tipo
-        gbc.gridy++;
-        painelFundo.add(new JLabel("Tipo:"), gbc);
-        comboTipo = new JComboBox<>(TipoIngresso.values());
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        lblTipoIngresso = new JLabel("Tipo de Ingresso:");
+        lblTipoIngresso.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(lblTipoIngresso, gbc);
+
         gbc.gridx = 1;
-        painelFundo.add(comboTipo, gbc);
-        gbc.gridx = 0;
+        cbxTipoIngresso = new JComboBox<>(TipoIngresso.values());
+        cbxTipoIngresso.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(cbxTipoIngresso, gbc);
 
-        // Quantidade
-        gbc.gridy++;
-        painelFundo.add(new JLabel("Quantidade:"), gbc);
-        txtQuantidade = new JTextField();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        lblQtde = new JLabel("Quantidade:");
+        lblQtde.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(lblQtde, gbc);
+
         gbc.gridx = 1;
-        painelFundo.add(txtQuantidade, gbc);
-        gbc.gridx = 0;
+        txtQtde = new JTextField(5);
+        txtQtde.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(txtQtde, gbc);
 
-        // Setor
-        gbc.gridy++;
-        painelFundo.add(new JLabel("Setor:"), gbc);
-        comboSetor = new JComboBox<>(Setores.values());
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        lblSetor = new JLabel("Setor:");
+        lblSetor.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(lblSetor, gbc);
+
         gbc.gridx = 1;
-        painelFundo.add(comboSetor, gbc);
-        gbc.gridx = 0;
+        cbxSetores = new JComboBox<>(Setores.values());
+        cbxSetores.setFont(new Font("Arial", Font.PLAIN, 14));
+        painelFormulario.add(cbxSetores, gbc);
 
-        // Valor
-        gbc.gridy++;
-        painelFundo.add(new JLabel("Valor Unitário:"), gbc);
-        txtValor = new JTextField();
-        gbc.gridx = 1;
-        painelFundo.add(txtValor, gbc);
-        gbc.gridx = 0;
+        painelFundo.add(painelFormulario, BorderLayout.CENTER);
 
-        // Botões
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-
-        JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         painelBotoes.setOpaque(false);
 
         btnSalvar = new JButton("Salvar");
-        estilizarBotao(btnSalvar, new Color(60, 160, 60));
+        estilizarBotao(btnSalvar, new Color(50, 150, 50));
+        btnSalvar.setToolTipText("Salvar o ingresso");
         painelBotoes.add(btnSalvar);
 
-        btnCancelar = new JButton("Cancelar");
-        estilizarBotao(btnCancelar, new Color(180, 60, 60));
-        painelBotoes.add(btnCancelar);
+        btnVoltar = new JButton("Voltar");
+        estilizarBotao(btnVoltar, new Color(200, 50, 50));
+        btnVoltar.setToolTipText("Retornar à tela inicial");
+        painelBotoes.add(btnVoltar);
 
-        painelFundo.add(painelBotoes, gbc);
+        painelFundo.add(painelBotoes, BorderLayout.SOUTH);
 
         add(painelFundo);
-
-        setOnClickListener();
+        pack();
+        setVisible(true);
     }
 
     private void estilizarBotao(JButton botao, Color corFundo) {
-        botao.setFont(new Font("Arial", Font.BOLD, 13));
+        botao.setFont(new Font("Arial", Font.PLAIN, 14));
         botao.setBackground(corFundo);
         botao.setForeground(Color.WHITE);
         botao.setFocusPainted(false);
+        botao.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        botao.setPreferredSize(new Dimension(110, 35));
+        botao.setOpaque(true);
+        botao.setContentAreaFilled(true);
+    }
+
+    private void preencherCampos() {
+        txtNome.setText(ingressoEdicao.getNome());
+        txtQtde.setText(String.valueOf(ingressoEdicao.getQuantidade()));
+        cbxSetores.setSelectedItem(ingressoEdicao.getSetor());
+        cbxTipoIngresso.setSelectedItem(ingressoEdicao.getTipoIngresso());
+    }
+
+    private void salvarIngresso() {
+        Ingresso ingresso;
+        if (ingressoEdicao != null) {
+            ingresso = ingressoEdicao; // Usar o objeto existente
+        } else {
+            ingresso = new Ingresso(); // Criar novo objeto
+        }
+
+        // Validações
+        String nome = txtNome.getText().trim();
+        if (nome.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, insira o nome!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        ingresso.setNome(nome);
+
+        String qtde = txtQtde.getText().trim();
+        if (!qtde.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Insira uma quantidade válida de ingressos!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int quantidade = Integer.parseInt(qtde);
+        if (quantidade <= 0) {
+            JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        ingresso.setQuantidade(quantidade);
+
+        Setores setor = (Setores) cbxSetores.getSelectedItem();
+        ingresso.setSetor(setor);
+
+        TipoIngresso tipoIngresso = (TipoIngresso) cbxTipoIngresso.getSelectedItem();
+        ingresso.setTipoIngresso(tipoIngresso);
+
+        double valorIngresso = getValorIngresso(setor, tipoIngresso);
+        ingresso.setValor(valorIngresso);
+        ingresso.setValorTotal(valorIngresso * ingresso.getQuantidade());
+        ingresso.setDataHora(LocalDateTime.now());
+
+        boolean sucesso;
+        if (ingressoEdicao == null) {
+            sucesso = gerenciador.comprarIngresso(ingresso);
+        } else {
+            if (ingresso.getCodigo() <= 0) {
+                JOptionPane.showMessageDialog(this, "Código do ingresso inválido para edição!", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            sucesso = gerenciador.atualizarIngresso(ingresso);
+        }
+
+        if (sucesso) {
+            JOptionPane.showMessageDialog(this,
+                    ingressoEdicao == null ? "Ingresso comprado com sucesso!" : "Ingresso atualizado com sucesso!",
+                    "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE);
+            limpar();
+            telaInicial.setVisible(true);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    ingressoEdicao == null ? "Ingressos esgotados! Por favor, selecione outro setor." : "Erro ao atualizar o ingresso.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private double getValorIngresso(Setores setor, TipoIngresso tipoIngresso) {
+        double valorIngresso = switch (setor) {
+            case AMARELO -> 180.00;
+            case AZUL -> 100.00;
+            case BRANCO -> 60.00;
+            case VERDE -> 350.00;
+        };
+        if (tipoIngresso == TipoIngresso.MEIA) {
+            valorIngresso /= 2;
+        }
+        return valorIngresso;
+    }
+
+    private void limpar() {
+        txtNome.setText("");
+        txtQtde.setText("");
+        cbxSetores.setSelectedIndex(0);
+        cbxTipoIngresso.setSelectedIndex(0);
     }
 
     private void setOnClickListener() {
-        btnSalvar.addActionListener(e -> {
-            try {
-                String nome = txtNome.getText().trim();
-                TipoIngresso tipo = (TipoIngresso) comboTipo.getSelectedItem();
-                int quantidade = Integer.parseInt(txtQuantidade.getText().trim());
-                Setores setor = (Setores) comboSetor.getSelectedItem();
-                double valor = Double.parseDouble(txtValor.getText().trim());
-                double total = valor * quantidade;
-                LocalDateTime dataHora = LocalDateTime.now();
+        btnSalvar.addActionListener(e -> salvarIngresso());
 
-                Ingresso ingresso = new Ingresso();
-                ingresso.setNome(nome);
-                ingresso.setTipoIngresso(tipo);
-                ingresso.setQuantidade(quantidade);
-                ingresso.setSetor(setor);
-                ingresso.setValor(valor);
-                ingresso.setValorTotal(total);
-                ingresso.setDataHora(dataHora);
-                IngressoDAO.getInstance().comprarIngresso(ingresso);
-
-                JOptionPane.showMessageDialog(this, "Ingresso cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                dispose();
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Preencha todos os campos corretamente.", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
+        btnVoltar.addActionListener(e -> {
+            telaInicial.setVisible(true);
+            dispose();
         });
-
-        btnCancelar.addActionListener(e -> dispose());
     }
 }

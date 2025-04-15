@@ -14,15 +14,19 @@ public class TelaInicial extends JDialog {
     private JButton btnGerarRelatorio;
     private JButton btnListarIngressos;
     private JButton btnSair;
-
-    IngressoDAO gerenciador = IngressoDAO.getInstance();
-    ArrayList<Ingresso> ingressos = gerenciador.getIngressos();
+    private final IngressoDAO gerenciador = IngressoDAO.getInstance();
+    private final ArrayList<Ingresso> ingressos = gerenciador.getIngressos();
 
     public TelaInicial() {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         setTitle("Sistema de Ingressos");
@@ -32,7 +36,7 @@ public class TelaInicial extends JDialog {
 
     private void criarComponentesTela() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(400, 400);
+        setMinimumSize(new Dimension(400, 400));
         setLocationRelativeTo(null);
 
         painelFundo = new JPanel(new BorderLayout(10, 10));
@@ -68,13 +72,13 @@ public class TelaInicial extends JDialog {
 
         btnSair = new JButton("Sair");
         estilizarBotao(btnSair, new Color(200, 50, 50));
-        btnSair.addActionListener(e -> System.exit(0));
         gbc.gridy = 3;
         painelBotoes.add(btnSair, gbc);
 
         painelFundo.add(painelBotoes, BorderLayout.CENTER);
         add(painelFundo);
-        setVisibleView(this);
+        pack();
+        setVisible(true);
     }
 
     private void estilizarBotao(JButton botao, Color corFundo) {
@@ -84,30 +88,28 @@ public class TelaInicial extends JDialog {
         botao.setFocusPainted(false);
         botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
         botao.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        botao.setOpaque(true);
+        botao.setContentAreaFilled(true);
     }
 
     private void setOnClickListener() {
-        btnComprar.addActionListener((e) -> {
-            JanelaCadastroIngresso janelaCadastroIngresso = new JanelaCadastroIngresso();
-            setVisibleView(janelaCadastroIngresso);
+        btnComprar.addActionListener(e -> {
+            new JanelaCadastroIngresso(this);
+            setVisible(false);
         });
 
-        btnGerarRelatorio.addActionListener((e) -> {
-            JanelaRelatorio janelaGrafica = new JanelaRelatorio();
-            setVisibleView(janelaGrafica);
+        btnGerarRelatorio.addActionListener(e -> {
+            JanelaRelatorio janelaGrafica = new JanelaRelatorio(this);
             janelaGrafica.imprimirRelatorio(ingressos);
+            setVisible(false);
         });
 
         btnListarIngressos.addActionListener(e -> {
-            JanelaListarIngressos janelaListarIngressos = new JanelaListarIngressos();
-            setVisibleView(janelaListarIngressos);
+            JanelaListarIngressos janelaListarIngressos = new JanelaListarIngressos(this);
             janelaListarIngressos.imprimirIngressos(ingressos);
+            setVisible(false);
         });
-    }
 
-    private void setVisibleView(JDialog view){
-        if (!view.isVisible()){
-            view.setVisible(true);
-        }
+        btnSair.addActionListener(e -> System.exit(0));
     }
 }

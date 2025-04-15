@@ -37,6 +37,34 @@ public class IngressoDAO {
         return gerenciadorDeIngressos;
     }
 
+    public Ingresso buscarPorCodigo(int codigo) {
+        return getIngressos().stream()
+                .filter(i -> i.getCodigo() == codigo)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean atualizarIngresso(Ingresso ingressoAtualizado) {
+        if (ingressoAtualizado == null || ingressoAtualizado.getCodigo() <= 0) {
+            return false;
+        }
+
+        for (int i = 0; i < ingressos.size(); i++) {
+            Ingresso ingresso = ingressos.get(i);
+            if (ingresso.getCodigo() == ingressoAtualizado.getCodigo()) {
+                // Atualizar os campos do ingresso existente
+                ingresso.setNome(ingressoAtualizado.getNome());
+                ingresso.setSetor(ingressoAtualizado.getSetor());
+                ingresso.setQuantidade(ingressoAtualizado.getQuantidade());
+                ingresso.setTipoIngresso(ingressoAtualizado.getTipoIngresso());
+                ingresso.setValor(ingressoAtualizado.getValor());
+                ingresso.setValorTotal(ingressoAtualizado.getValorTotal());
+                ingresso.setDataHora(ingressoAtualizado.getDataHora());
+                return true;
+            }
+        }
+        return false; // Ingresso não encontrado
+    }
 }
 
 
