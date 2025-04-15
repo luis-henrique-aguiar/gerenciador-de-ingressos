@@ -2,22 +2,25 @@ package br.edu.ifsp.vendas_ingresso.view;
 
 import br.edu.ifsp.vendas_ingresso.model.entity.Ingresso;
 
-import java.util.ArrayList;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.ArrayList;
 
 class JanelaRelatorio extends JDialog {
 
     private JPanel painelFundo;
-    private JPanel painelBotoes;
     private JTable tabelaIngressos;
     private JScrollPane scroll;
-    private DefaultTableModel modelo;//Modelo da tabela
+    private DefaultTableModel modelo;
 
     public JanelaRelatorio() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         modelo = new DefaultTableModel();
         criarTabela();
         criarComponentes();
@@ -25,7 +28,8 @@ class JanelaRelatorio extends JDialog {
 
     private void criarTabela() {
         tabelaIngressos = new JTable(modelo);
-        tabelaIngressos.setSize(700, 800);
+        tabelaIngressos.setRowHeight(28);
+        tabelaIngressos.setFont(new Font("SansSerif", Font.PLAIN, 13));
 
         modelo.addColumn("Código");
         modelo.addColumn("Nome");
@@ -35,40 +39,27 @@ class JanelaRelatorio extends JDialog {
         modelo.addColumn("Total");
         modelo.addColumn("Data e Hora");
 
-        tabelaIngressos.getColumnModel().getColumn(0)
-                .setPreferredWidth(5);
-        tabelaIngressos.getColumnModel().getColumn(1)
-                .setPreferredWidth(70);
-        tabelaIngressos.getColumnModel().getColumn(2)
-                .setPreferredWidth(20);
-        tabelaIngressos.getColumnModel().getColumn(3)
-                .setPreferredWidth(1);
-        tabelaIngressos.getColumnModel().getColumn(4)
-                .setPreferredWidth(15);
-        tabelaIngressos.getColumnModel().getColumn(5)
-                .setPreferredWidth(15);
-        tabelaIngressos.getColumnModel().getColumn(6)
-                .setPreferredWidth(70);
+        tabelaIngressos.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
+        tabelaIngressos.getTableHeader().setBackground(new Color(200, 200, 255));
     }
 
     private void criarComponentes() {
-        painelBotoes = new JPanel();
         scroll = new JScrollPane(tabelaIngressos);
-        painelFundo = new JPanel();
-        painelFundo.add(scroll);
-        painelFundo.add(painelBotoes);
-        add(painelFundo);
 
-        setTitle("Ingressos");
-        setVisible(true);
-        pack();
-        setSize(600, 600);
+        painelFundo = new JPanel(new BorderLayout());
+        painelFundo.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        painelFundo.setBackground(new Color(245, 245, 245));
+        painelFundo.add(scroll, BorderLayout.CENTER);
+
+        setContentPane(painelFundo);
+        setTitle("Relatório de Ingressos");
+        setSize(800, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setVisible(true);
     }
 
     private void carregarDados(DefaultTableModel modelo, ArrayList<Ingresso> ingressos) {
-
         modelo.setNumRows(0);
         if (ingressos != null && !ingressos.isEmpty()) {
             ingressos.forEach(c -> modelo.addRow(new Object[]{
@@ -86,5 +77,4 @@ class JanelaRelatorio extends JDialog {
     public void imprimirRelatorio(ArrayList<Ingresso> ingressos) {
         carregarDados(modelo, ingressos);
     }
-
 }
