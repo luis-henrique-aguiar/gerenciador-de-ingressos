@@ -36,7 +36,7 @@ public class JanelaListarIngressos extends JDialog {
         modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5 || column == 6;
+                return column == 7 || column == 8;
             }
         };
 
@@ -56,6 +56,8 @@ public class JanelaListarIngressos extends JDialog {
         modelo.addColumn("Nome");
         modelo.addColumn("Tipo");
         modelo.addColumn("Qtd");
+        modelo.addColumn("Valor");
+        modelo.addColumn("Total");
         modelo.addColumn("Setor");
         modelo.addColumn("Editar");
         modelo.addColumn("Excluir");
@@ -68,8 +70,10 @@ public class JanelaListarIngressos extends JDialog {
         tabelaIngressos.getColumnModel().getColumn(2).setPreferredWidth(80);
         tabelaIngressos.getColumnModel().getColumn(3).setPreferredWidth(40);
         tabelaIngressos.getColumnModel().getColumn(4).setPreferredWidth(80);
-        tabelaIngressos.getColumnModel().getColumn(5).setPreferredWidth(60);
+        tabelaIngressos.getColumnModel().getColumn(5).setPreferredWidth(80);
         tabelaIngressos.getColumnModel().getColumn(6).setPreferredWidth(60);
+        tabelaIngressos.getColumnModel().getColumn(7).setPreferredWidth(100);
+        tabelaIngressos.getColumnModel().getColumn(8).setPreferredWidth(100);
 
         tabelaIngressos.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar", new Color(50, 100, 200)));
         tabelaIngressos.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), "Editar", this));
@@ -81,7 +85,7 @@ public class JanelaListarIngressos extends JDialog {
     private void criarComponentes() {
         setTitle("Lista de Ingressos");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(700, 500));
+        setMinimumSize(new Dimension(900, 500));
         setLocationRelativeTo(null);
 
         painelFundo = new JPanel(new BorderLayout(10, 10));
@@ -152,6 +156,8 @@ public class JanelaListarIngressos extends JDialog {
                     i.getNome(),
                     i.getTipoIngresso(),
                     i.getQuantidade(),
+                    i.getValor(),
+                    i.getValorTotal(),
                     i.getSetor(),
                     "Editar",
                     "Excluir"
